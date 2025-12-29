@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CardPreview from "../components/CardPreview";
+import PageFlipShell from "../components/PageFlipShell";
 import { benefitsDb } from "../services/benefitsDb";
 
 export default function Card() {
@@ -68,85 +69,98 @@ export default function Card() {
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        <div style={{ ...styles.flipCard, height: cardHeight ? cardHeight : undefined }}>
-          <div style={flipInnerStyle}>
-            {/* FRONT */}
-            <div style={{ ...styles.flipFace, ...styles.flipFront }}>
-              <div ref={frontRef}>
-                <CardPreview
-                  member={{
-                    ...member,
-                    statusLabel,
-                    photoUrl: member.photoUrl || "",
-                  }}
-                  qrValue={verifyUrl}
-                  status={status}
-                />
+        <PageFlipShell>
+          <div
+            style={{
+              ...styles.flipCard,
+              height: cardHeight ? cardHeight : undefined,
+            }}
+          >
+            <div style={flipInnerStyle}>
+              {/* FRONT */}
+              <div style={{ ...styles.flipFace, ...styles.flipFront }}>
+                <div ref={frontRef}>
+                  <CardPreview
+                    member={{
+                      ...member,
+                      statusLabel,
+                      photoUrl: member.photoUrl || "",
+                    }}
+                    qrValue={verifyUrl}
+                    status={status}
+                  />
 
-               <div style={styles.footer}>
-              <button
-               type="button"
-                 onClick={() => setFlipped(true)}
-                 style={styles.linkButton}
-                 >
-                  Ver Beneficios
-                 </button>
-                 <span style={styles.dot}>•</span>
-                 <Link to="/" style={styles.link}>
-                   Ir al inicio
-                 </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* BACK */}
-            <div style={{ ...styles.flipFace, ...styles.flipBack }}>
-              <div style={styles.backCard}>
-                <div style={styles.backHeader}>
-                  <div style={styles.brandRow}>
-                    <div style={styles.logoWrap}>
-                      <img
-                        src="/VMC.PNG"
-                        alt="Logo VMC"
-                        style={styles.logo}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <div style={styles.backTitle}>Beneficios VMC</div>
-                      <div style={styles.backSub}>{member.displayName || "Invitado"}</div>
-                    </div>
+                  <div style={styles.footer}>
+                    <button
+                      type="button"
+                      onClick={() => setFlipped(true)}
+                      style={styles.linkButton}
+                    >
+                      Ver Beneficios
+                    </button>
+                    <span style={styles.dot}>•</span>
+                    <Link to="/" style={styles.link}>
+                      Ir al inicio
+                    </Link>
                   </div>
                 </div>
+              </div>
 
-                <div style={styles.benefitList}>
-                  {benefits.length === 0 ? (
-                    <div style={styles.empty}>No hay beneficios cargados todavía.</div>
-                  ) : (
-                    benefits.map((b) => (
-                      <div key={b.id ?? b.title} style={styles.benefitItem}>
-                        <div style={styles.benefitTitle}>• {b.title}</div>
-                        <div style={styles.benefitDesc}>{b.detail}</div>
-                        <div style={styles.benefitMeta}>
-                          {b.institution ? `• ${b.institution}` : ""}
-                          {b.category ? `  •  ${b.category}` : ""}
+              {/* BACK */}
+              <div style={{ ...styles.flipFace, ...styles.flipBack }}>
+                <div style={styles.backCard}>
+                  <div style={styles.backHeader}>
+                    <div style={styles.brandRow}>
+                      <div style={styles.logoWrap}>
+                        <img
+                          src="/VMC.PNG"
+                          alt="Logo VMC"
+                          style={styles.logo}
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <div style={styles.backTitle}>Beneficios VMC</div>
+                        <div style={styles.backSub}>
+                          {member.displayName || "Invitado"}
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
+                    </div>
+                  </div>
 
-                <div style={styles.backFooter}>
-                  <button type="button" onClick={() => setFlipped(false)} style={styles.linkButton}>
-                    Volver
-                  </button>
+                  <div style={styles.benefitList}>
+                    {benefits.length === 0 ? (
+                      <div style={styles.empty}>No hay beneficios cargados todavía.</div>
+                    ) : (
+                      benefits.map((b) => (
+                        <div key={b.id ?? b.title} style={styles.benefitItem}>
+                          <div style={styles.benefitTitle}>• {b.title}</div>
+                          <div style={styles.benefitDesc}>{b.detail}</div>
+                          <div style={styles.benefitMeta}>
+                            {b.institution ? `• ${b.institution}` : ""}
+                            {b.category ? `  •  ${b.category}` : ""}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div style={styles.backFooter}>
+                    <button
+                      type="button"
+                      onClick={() => setFlipped(false)}
+                      style={styles.linkButton}
+                    >
+                      Volver
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </PageFlipShell>
       </div>
     </div>
   );
@@ -185,8 +199,11 @@ const styles = {
   flipBack: { transform: "rotateY(180deg)" },
 
   footer: { textAlign: "center", marginTop: 12 },
-  link: { color: "#A3D07C", // olive accent
-    fontWeight: 900, textDecoration: "none" },
+  link: {
+    color: "#A3D07C", // olive accent
+    fontWeight: 900,
+    textDecoration: "none",
+  },
   dot: { color: "rgba(255,255,255,0.40)", margin: "0 10px" },
   linkButton: {
     background: "transparent",
@@ -220,8 +237,8 @@ const styles = {
     gap: 12,
   },
   logoWrap: {
-    width: 44,
-    height: 44,
+    width: 128,
+    height: 128,
     borderRadius: 14,
     background: "rgba(255,255,255,0.14)",
     border: "1px solid rgba(255,255,255,0.18)",
@@ -231,8 +248,8 @@ const styles = {
     flex: "0 0 auto",
   },
   logo: {
-    width: 34,
-    height: 34,
+    width: 120,
+    height: 120,
     objectFit: "contain",
   },
   backTitle: { fontSize: 26, fontWeight: 900, lineHeight: 1.05 },
@@ -253,9 +270,24 @@ const styles = {
     border: "1px solid rgba(145, 124, 124, 0.18)",
     boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)",
   },
-  benefitTitle: { fontWeight: 900, fontSize: 22, marginBottom: 6, color: "#FFFFFF" },
-  benefitDesc: { fontSize: 16, opacity: 0.95, lineHeight: 1.25, color: "#FFFFFF" },
-  benefitMeta: { fontSize: 14, opacity: 0.85, marginTop: 10, color: "#F1F5F0" },
+  benefitTitle: {
+    fontWeight: 900,
+    fontSize: 22,
+    marginBottom: 6,
+    color: "#FFFFFF",
+  },
+  benefitDesc: {
+    fontSize: 16,
+    opacity: 0.95,
+    lineHeight: 1.25,
+    color: "#FFFFFF",
+  },
+  benefitMeta: {
+    fontSize: 14,
+    opacity: 0.85,
+    marginTop: 10,
+    color: "#F1F5F0",
+  },
   empty: { opacity: 0.9, fontSize: 14 },
 
   backFooter: {

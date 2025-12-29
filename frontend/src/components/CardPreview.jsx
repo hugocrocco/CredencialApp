@@ -91,7 +91,7 @@ export default function CardPreview({ member, qrValue }) {
 }
 
 const styles = {
-  card: {
+  /*card: {
     width: "100%",
     borderRadius: 24,
     padding: 18,
@@ -100,12 +100,19 @@ const styles = {
     fontFamily: "system-ui",
     boxShadow: "0 18px 38px rgba(0,0,0,0.45)",
     boxSizing: "border-box",
+  },*/
+  card: {
+    borderRadius: 24,
+    padding: 16,
+    background: "#556B2F",
+    color: "white",
+    boxShadow: "0 20px 40px rgba(0,0,0,0.40)",
   },
   header: { marginBottom: 10 },
   brandRow: { display: "flex", alignItems: "center", gap: 10 },
   logoWrap: {
-    width: 40,
-    height: 40,
+    width: 128,
+    height: 128,
     borderRadius: 14,
     background: "rgba(0,0,0,0.22)",
     border: "1px solid rgba(255,255,255,0.18)",
@@ -113,7 +120,7 @@ const styles = {
     placeItems: "center",
     overflow: "hidden",
   },
-  logo: { width: 30, height: 30, objectFit: "contain" },
+  logo: { width: 120, height: 120, objectFit: "contain" },
   org: { fontSize: 18, fontWeight: 900, letterSpacing: 0.4 },
   orgSub: { fontSize: 11, textTransform: "uppercase", opacity: 0.9, letterSpacing: 1.2 },
 
