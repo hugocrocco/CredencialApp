@@ -1,11 +1,12 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CardPreview from "../components/CardPreview";
 import PageFlipShell from "../components/PageFlipShell";
 import { benefitsDb } from "../services/benefitsDb";
 
 export default function Card() {
   const baseUrl = window.location.origin;
+  const navigate = useNavigate();
   const [flipped, setFlipped] = useState(false);
 
   // Keep both faces EXACT same height as the front face
@@ -61,6 +62,18 @@ export default function Card() {
     return raw.filter((b) => b?.active !== false);
   }, []);
 
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem("member");
+      localStorage.removeItem("session");
+      localStorage.removeItem("role");
+      localStorage.removeItem("isAdmin");
+    } catch (e) {
+      // ignore
+    }
+    navigate("/", { replace: true });
+  };
+
   const flipInnerStyle = {
     ...styles.flipInner,
     transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -102,6 +115,14 @@ export default function Card() {
                     <Link to="/" style={styles.link}>
                       Ir al inicio
                     </Link>
+                    <span style={styles.dot}>•</span>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      style={styles.linkButton}
+                    >
+                      Cerrar sesión
+                    </button>
                   </div>
                 </div>
               </div>

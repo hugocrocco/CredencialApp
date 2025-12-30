@@ -1,114 +1,188 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import PageFlipShell from "../components/PageFlipShell";
 
 export default function Login() {
-  const styles = {
-    page: {
-      minHeight: "100vh",
-      background: "#1F2A14",
-      padding: 20,
-      fontFamily: "system-ui",
-    },
-    container: {
-      maxWidth: 420,
-      margin: "0 auto",
-    },
+  const navigate = useNavigate();
 
-    // MISMA TARJETA BASE QUE CardPreview.jsx
+  const [form, setForm] = useState({
+    rut: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((p) => ({ ...p, [name]: value }));
+    setError("");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const rut = form.rut.trim();
+    const password = form.password;
+
+    if (!rut || !password) {
+      setError("Completa RUT y contraseña.");
+      return;
+    }
+
+    // MVP: por ahora solo guardamos “sesión” local (sin backend)
+    // Más adelante aquí llamamos al backend /api/auth/login
+    try {
+      localStorage.setItem(
+        "session",
+        JSON.stringify({
+          ok: true,
+          rut,
+          ts: Date.now(),
+        })
+      );
+    } catch (err) {
+      console.error(err);
+    }
+
+    // Si hay credencial ya creada, la mostramos; si no, lo mandas a register (después)
+    navigate("/card");
+  };
+
+  const styles = {
+    page: { minHeight: "100vh", background: "#1F2A14", padding: 20, fontFamily: "system-ui" },
+    container: { maxWidth: 420, margin: "0 auto" },
+
     card: {
       borderRadius: 24,
-      padding: 16,
-      background: "#556B2F",
+      padding: 18,
+      background: "linear-gradient(180deg, #556B2F 0%, #3E4F22 100%)",
       color: "white",
       boxShadow: "0 20px 40px rgba(0,0,0,0.40)",
-      boxSizing: "border-box",
     },
 
-    header: { marginBottom: 10 },
-    brandRow: { display: "flex", alignItems: "center", gap: 10 },
-
-    // MISMO WRAP / LOGO QUE CardPreview.jsx
+    header: { marginBottom: 12 },
+    brandRow: { display: "flex", alignItems: "center", gap: 12 },
     logoWrap: {
-      width: 128,
-      height: 128,
-      borderRadius: 14,
-      background: "rgba(0,0,0,0.22)",
+      width: 96,
+      height: 96,
+      borderRadius: 18,
+      background: "rgba(255,255,255,0.14)",
       border: "1px solid rgba(255,255,255,0.18)",
       display: "grid",
       placeItems: "center",
       overflow: "hidden",
       flex: "0 0 auto",
     },
-    logo: { width: 120, height: 120, objectFit: "contain" },
+    logo: { width: 90, height: 90, objectFit: "contain" },
+    org: { fontSize: 20, fontWeight: 900, letterSpacing: 0.3 },
+    sub: { marginTop: 2, fontSize: 13, opacity: 0.9 },
 
-    org: { fontSize: 18, fontWeight: 900, letterSpacing: 0.4 },
-    orgSub: {
-      fontSize: 11,
-      textTransform: "uppercase",
-      opacity: 0.9,
-      letterSpacing: 1.2,
+    form: {
+      display: "grid",
+      gap: 10,
+      marginTop: 8,
+      maxWidth: 300,
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+    label: { fontSize: 12, opacity: 0.9, display: "grid", gap: 4 },
+    input: {
+      width: "100%",
+      padding: 10,
+      borderRadius: 10,
+      border: "1px solid rgba(255,255,255,0.35)",
+      background: "rgba(15,23,42,0.35)",
+      color: "white",
+      outline: "none",
+      fontFamily: "inherit",
+      fontSize: 14,
     },
 
-    title: { marginTop: 10, marginBottom: 0, fontSize: 18, fontWeight: 900 },
-    sub: { marginTop: 8, fontSize: 13, opacity: 0.9, lineHeight: 1.3 },
-
-    actions: { display: "grid", gap: 10, marginTop: 14 },
-
-    btn: {
-      display: "block",
-      textAlign: "center",
-      padding: 12,
-      borderRadius: 12,
+    error: {
+      marginTop: 2,
+      fontSize: 12,
       fontWeight: 900,
-      textDecoration: "none",
-      background: "#3E4F22",
-      color: "white",
-    },
-    btnAlt: {
-      display: "block",
-      textAlign: "center",
-      padding: 12,
-      borderRadius: 12,
-      fontWeight: 900,
-      textDecoration: "none",
-      background: "rgba(31,42,20,0.35)",
-      color: "white",
+      color: "#FFE08A",
+      background: "rgba(0,0,0,0.25)",
       border: "1px solid rgba(255,255,255,0.18)",
+      padding: "8px 10px",
+      borderRadius: 12,
     },
+
+    button: {
+      marginTop: 6,
+      width: "100%",
+      padding: 12,
+      borderRadius: 12,
+      border: "none",
+      fontWeight: 900,
+      cursor: "pointer",
+      background: "#A3D07C",
+      color: "#1F2A14",
+      fontSize: 14,
+    },
+
+    footer: { marginTop: 10, textAlign: "center", fontSize: 12 },
+    link: { color: "#E5F5C6", fontWeight: 900, textDecoration: "none" },
   };
 
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        <div style={styles.card}>
-          <div style={styles.header}>
-            <div style={styles.brandRow}>
-              <div style={styles.logoWrap}>
-                <img src="/VMC.PNG" alt="VMC" style={styles.logo} />
-              </div>
-              <div>
-                <div style={styles.org}>Valparaíso Moto Club</div>
-                <div style={styles.orgSub}>VMC</div>
+        <PageFlipShell>
+          <div style={styles.card}>
+            <div style={styles.header}>
+              <div style={styles.brandRow}>
+                <div style={styles.logoWrap}>
+                  <img src="/VMC.PNG" alt="VMC" style={styles.logo} />
+                </div>
+                <div>
+                  <div style={styles.org}>Valparaíso Moto Club</div>
+                  <div style={styles.sub}>VMC · Iniciar sesión</div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <h2 style={styles.title}>Iniciar sesión</h2>
-          <div style={styles.sub}>
-            Por ahora esta pantalla es de acceso rápido. Luego la conectamos al backend para login real.
-          </div>
+            <form style={styles.form} onSubmit={handleSubmit}>
+              <label style={styles.label}>
+                RUT (o ID)
+                <input
+                  name="rut"
+                  value={form.rut}
+                  onChange={handleChange}
+                  style={styles.input}
+                  placeholder="Ej: 12.345.678-9"
+                  autoComplete="username"
+                />
+              </label>
 
-          <div style={styles.actions}>
-            <Link to="/card" style={styles.btn}>
-              Ir a mi credencial
-            </Link>
-            <Link to="/register" style={styles.btnAlt}>
-              Crear cuenta
-            </Link>
-            <Link to="/" style={styles.btnAlt}>
-              Volver a inicio
-            </Link>
+              <label style={styles.label}>
+                Contraseña
+                <input
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  style={styles.input}
+                  placeholder="••••"
+                  type="password"
+                  autoComplete="current-password"
+                />
+              </label>
+
+              {error ? <div style={styles.error}>{error}</div> : null}
+
+              <button type="submit" style={styles.button}>
+                Iniciar sesión
+              </button>
+            </form>
+
+            <div style={styles.footer}>
+              <Link to="/" style={styles.link}>
+                Volver al inicio
+              </Link>
+            </div>
           </div>
-        </div>
+        </PageFlipShell>
       </div>
     </div>
   );
